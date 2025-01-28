@@ -19,4 +19,4 @@ M=M+1
 @17
 0;JMP
 ```
-![Prueba de que el codigo sirve](../../../../assets/Ejercicio 9.png)
+![Prueba de que el codigo sirve](../../../../assets/Ejercicio9.png)
