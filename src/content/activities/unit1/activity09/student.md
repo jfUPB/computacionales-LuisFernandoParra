@@ -1,3 +1,4 @@
+```
 @1
 M=A
 D=M
@@ -17,3 +18,5 @@ M=M+1
 0;JMP
 @17
 0;JMP
+```
+![Prueba de que el codigo sirve](../../../../assets/Ejercicio 9.png)
