@@ -10,4 +10,4 @@ D=D-A
 @10
 M=D
 ```
-![image]("../../../../../../assets/codigoassembler.png")
+![image]("../../../../assets/codigoassembler.png")
