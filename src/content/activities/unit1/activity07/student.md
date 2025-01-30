@@ -1,4 +1,4 @@
-```
+``` asm
 @10
 D=A
 M=D
@@ -10,4 +10,5 @@ D=D-A
 @10
 M=D
 ```
-![image]("../../../../assets/codigoassembler.png")
+
+![image](../../../../assets/codigoassembler.png)
