@@ -21,4 +21,6 @@ M=D
 @15 
 0;JMP 
 ```
-![image]("../../../../assets/Actividad8sistemascomputacionales.png")
+
+![image](../../../../assets/Actividad8sistemascomputacionales.png)
+
