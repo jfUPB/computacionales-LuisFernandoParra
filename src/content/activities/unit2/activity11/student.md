@@ -18,7 +18,7 @@ El ciclo *while* es como un "mientras tanto" en la programación. Repite un bloq
 Los arreglos son como cajas donde guardas varios valores en orden. Manipular un arreglo significa acceder a esos valores, cambiarlos, agregar nuevos o eliminarlos. Es una habilidad clave para trabajar con listas de datos, como una lista de nombres, precios o cualquier cosa que necesites organizar.
 
 ## Ejemplos  
-En la siguiente actividad, encontrarás ejemplos prácticos de todos estos conceptos. Estos ejemplos te ayudarán a ver cómo se aplican en situaciones reales y a entender mejor cómo funcionan. ¡Es la mejor manera de aprender!
+En la siguiente actividad, hay ejemplos concretos de esto.
 
 ## Llamado a Funciones con Parámetros  
 Las funciones son como "mini-programas" dentro de tu código. Puedes darles valores de entrada (parámetros) para que hagan algo específico. Por ejemplo, una función que suma dos números recibe esos números como parámetros, los procesa y te da el resultado. Esto evita que tengas que repetir el mismo código una y otra vez.
