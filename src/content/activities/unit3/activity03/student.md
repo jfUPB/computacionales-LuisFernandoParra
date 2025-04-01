@@ -1,3 +1,4 @@
+```
 +-----------------------------------------------------------------------+
 | Las intrucciones en lenguaje maquina,                                 | <--- Segmento de código (instrucciones, funciones)
 | previamente compiladas a ensamblador                                  |
@@ -34,3 +35,5 @@
 |momentaneas.                                                           |
 |EJEMPLOS: int tam, static int var_estatica = 100;, int a, int b        |
 +-----------------------------------------------------------------------+
+```
+![image](../../../../assets/A3U3.png)
