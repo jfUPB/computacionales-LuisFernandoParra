@@ -27,4 +27,5 @@ Presionando la tecla ‘c’, se borra completamente la lista
 Antes de eliminar un nodo, se usa la condición:
 
 if (!snake.empty()) { Esto comprueba si la lista contiene nodos antes de intentar eliminar uno. }
-## dibujo
+## Dibujo
+![image](../../../../assets/A1U4.png)
