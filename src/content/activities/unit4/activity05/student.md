@@ -23,9 +23,11 @@ Definitivamente, planificaría mejor antes de comenzar a escribir código.
 ## ¿Cómo se relaciona con tu carrera?
 
 Las colas son fundamentales en áreas como el desarrollo de videojuegos. 
+
 ---
 
 ## ¿Qué aprendizajes aplicarás en futuros proyectos?
 
 El aprendizaje principal que me llevo es cómo manejar estructuras dinámicas de forma segura, especialmente el control de memoria. 
+
 ---
