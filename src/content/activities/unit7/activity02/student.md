@@ -1,3 +1,4 @@
+# Actividad 1
 Primero, **opengl32.lib** es una biblioteca que ya viene incluida con Windows. Su propósito es permitir la creación del contexto básico de OpenGL y brindar acceso a las funciones de la versión 1.1. Es indispensable para iniciar con OpenGL, aunque sus funciones son bastante antiguas. Para trabajar con versiones más modernas, se necesitan herramientas adicionales.
 
 Una de esas herramientas es **GLFW**, una biblioteca que facilita la creación de ventanas y el manejo de entradas como el teclado y el mouse. También se encarga de crear el contexto de OpenGL necesario para comenzar a dibujar. GLFW utiliza dos archivos importantes: **glfw3.lib**, que se enlaza al compilar el programa, y **glfw3.dll**, que se necesita durante la ejecución (si este archivo no está presente, el programa compilará pero no se ejecutará).
