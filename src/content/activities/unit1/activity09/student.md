@@ -1,0 +1,22 @@
+```
+@1
+M=A
+D=M
+@12
+M=0
+@5
+D=D-A
+@17
+D;JGE
+@1
+D=M
+@12
+M=D+M
+@1
+M=M+1
+@5
+0;JMP
+@17
+0;JMP
+```
+![Prueba de que el codigo sirve](../../../../assets/Ejercicio9.png)
