@@ -1,4 +1,4 @@
-## Análisis del ejemplo del triángulo simple – Parte 1
+## Actividad 3
 
 
 ---
