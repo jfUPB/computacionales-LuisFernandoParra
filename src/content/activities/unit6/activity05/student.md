@@ -1,172 +1,221 @@
-# Actividad
+# Actividad 5
 
 ##  Descripción del Proyecto
 
 **“Jardín de Partículas Emocionales”** es una experiencia visual interactiva en la que el usuario cultiva un jardín abstracto lleno de partículas con emociones. Al mover el mouse o presionar teclas, el usuario crea partículas con diferentes comportamientos y colores. El jardín cambia de estado automáticamente cada ciertos segundos o mediante la interacción, alterando la forma en la que las partículas se comportan (viento, calma, crecimiento). Se aplican tres patrones de diseño: **Observer**, **Factory Method** y **State** para organizar la lógica del sistema.
 
 ---
+## OffApp.H
+```
+#pragma once
 
-##  Diseño con Patrones
+#include "ofMain.h"
+#include <vector>
+#include <memory>
 
-###  Observer
+// Forward declarations
+class Particle;
+class EmotionState;
 
-- **Sujeto:** `InputManager`
-- **Observadores:** `Garden`, `Logger`, `UI`
-- **Evento observado:** Entrada del usuario (clic de mouse, teclas)
-- **Comportamiento:** Cuando el usuario interactúa, el `InputManager` notifica a todos los observadores.
-
-```cpp
-// Observer.h
-class Observer {
+// ---------- OBSERVER ----------
+class EventListener {
 public:
-    virtual void onNotify(string event) = 0;
+    virtual void onNotify(std::string event) = 0;
 };
 
-// InputManager.h
-class InputManager {
-    vector<Observer*> observers;
+// ---------- SUBJECT ----------
+class EventSubject {
+protected:
+    std::vector<EventListener*> listeners;
 public:
-    void addObserver(Observer* o) { observers.push_back(o); }
-    void notify(string event) {
-        for (auto o : observers) o->onNotify(event);
+    void addListener(EventListener* l) {
+        listeners.push_back(l);
+    }
+    void notify(std::string event) {
+        for (auto& l : listeners) {
+            l->onNotify(event);
+        }
     }
 };
-```
 
-**Prueba:**
-```cpp
-inputManager.notify("mouseClicked");
-// Esperado: garden recibe el evento y crea partículas.
-```
+// ---------- PARTICULAS ----------
+class Particle {
+public:
+    ofVec2f pos;
+    ofVec2f vel;
+    ofColor color;
 
----
+    Particle(ofVec2f p, ofVec2f v, ofColor c) : pos(p), vel(v), color(c) {}
 
-###  Factory Method
+    virtual void update() {
+        pos += vel;
+    }
 
-- **Clase Factory:** `ParticleFactory`
-- **Productos:** `HappyParticle`, `AngryParticle`, `SadParticle`
-- **Motivación:** Desacoplar la creación de partículas del resto de la lógica.
+    virtual void draw() {
+        ofSetColor(color);
+        ofDrawCircle(pos, 4);
+    }
 
-```cpp
-// ParticleFactory.h
+    virtual ~Particle() {}
+};
+
+// ---------- FACTORY ----------
 class ParticleFactory {
 public:
-    static shared_ptr<Particle> createParticle(string type, ofVec2f pos) {
-        if(type == "happy") return make_shared<HappyParticle>(pos);
-        if(type == "angry") return make_shared<AngryParticle>(pos);
-        if(type == "sad") return make_shared<SadParticle>(pos);
-        return nullptr;
+    static std::shared_ptr<Particle> createParticle(std::string emotion, ofVec2f pos) {
+        if (emotion == "happy") {
+            return std::make_shared<Particle>(pos, ofVec2f(ofRandom(-1,1), ofRandom(-1,1)), ofColor::yellow);
+        } else if (emotion == "sad") {
+            return std::make_shared<Particle>(pos, ofVec2f(0, ofRandom(1,3)), ofColor::blue);
+        } else if (emotion == "angry") {
+            return std::make_shared<Particle>(pos, ofVec2f(ofRandom(-3,3), ofRandom(-3,3)), ofColor::red);
+        } else {
+            return std::make_shared<Particle>(pos, ofVec2f(0, 0), ofColor::white);
+        }
     }
 };
-```
 
-**Prueba:**
-```cpp
-auto p = ParticleFactory::createParticle("happy", {100, 100});
-cout << "Tipo: " << p->getType() << endl;
-```
-
----
-
-###  State
-
-- **Contexto:** `Garden`
-- **Estados concretos:**
-  - `CalmState` (movimiento suave, colores pasteles)
-  - `WindyState` (movimiento disperso y rápido)
-  - `GrowthState` (más generación de partículas)
-- **Motivación:** Encapsular comportamientos del jardín en clases de estado.
-
-```cpp
-// GardenState.h
-class GardenState {
+// ---------- STATE INTERFACE ----------
+class EmotionState {
 public:
-    virtual void update(Garden* garden) = 0;
+    virtual void generate(std::vector<std::shared_ptr<Particle>>& particles) = 0;
+    virtual std::string getName() = 0;
+    virtual ~EmotionState() {}
 };
 
-// CalmState.h
-class CalmState : public GardenState {
+// ---------- CONCRETE STATES ----------
+class HappyState : public EmotionState {
 public:
-    void update(Garden* garden) override {
-        garden->setWind(0.1);
-        garden->setColorPalette("soft");
+    void generate(std::vector<std::shared_ptr<Particle>>& particles) override {
+        for (int i = 0; i < 5; i++) {
+            particles.push_back(ParticleFactory::createParticle("happy", ofVec2f(ofRandomWidth(), ofRandomHeight())));
+        }
     }
+    std::string getName() override { return "happy"; }
+};
+
+class SadState : public EmotionState {
+public:
+    void generate(std::vector<std::shared_ptr<Particle>>& particles) override {
+        for (int i = 0; i < 5; i++) {
+            particles.push_back(ParticleFactory::createParticle("sad", ofVec2f(ofRandomWidth(), 0)));
+        }
+    }
+    std::string getName() override { return "sad"; }
+};
+
+class AngryState : public EmotionState {
+public:
+    void generate(std::vector<std::shared_ptr<Particle>>& particles) override {
+        for (int i = 0; i < 5; i++) {
+            particles.push_back(ParticleFactory::createParticle("angry", ofVec2f(ofRandomWidth(), ofRandomHeight())));
+        }
+    }
+    std::string getName() override { return "angry"; }
+};
+
+// ---------- OFAPP ----------
+class ofApp : public ofBaseApp, public EventListener, public EventSubject {
+
+public:
+    void setup();
+    void update();
+    void draw();
+    void keyPressed(int key);
+
+    // Partículas
+    std::vector<std::shared_ptr<Particle>> particles;
+
+    // Estado
+    std::shared_ptr<EmotionState> currentState;
+
+    // Estados posibles
+    std::shared_ptr<HappyState> happyState;
+    std::shared_ptr<SadState> sadState;
+    std::shared_ptr<AngryState> angryState;
+
+    // Observer
+    void onNotify(std::string event) override;
+
+    // Cambio de estado
+    void setState(std::shared_ptr<EmotionState> newState);
 };
 ```
+OffApp.cpp
+```
+#include "ofApp.h"
 
-```cpp
-// Garden.h (fragmento)
-void setState(GardenState* newState) {
-    if(state) delete state;
-    state = newState;
+//--------------------------------------------------------------
+void ofApp::setup(){
+    ofBackground(20);
+    ofSetFrameRate(60);
+
+    // Crear estados
+    happyState = std::make_shared<HappyState>();
+    sadState = std::make_shared<SadState>();
+    angryState = std::make_shared<AngryState>();
+
+    // Estado inicial
+    setState(happyState);
+
+    // Registro como listener de sí mismo (Subject)
+    addListener(this);
+}
+
+//--------------------------------------------------------------
+void ofApp::update(){
+    // Generar nuevas partículas con el estado actual
+    currentState->generate(particles);
+
+    // Actualizar partículas
+    for (auto& p : particles) {
+        p->update();
+    }
+
+    // Limitar tamaño de vector
+    if (particles.size() > 500) {
+        particles.erase(particles.begin(), particles.begin() + 5);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+    ofSetColor(255);
+    ofDrawBitmapString("Estado actual: " + currentState->getName(), 20, 20);
+
+    for (auto& p : particles) {
+        p->draw();
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+    if (key == 'h') {
+        notify("happy");
+    } else if (key == 's') {
+        notify("sad");
+    } else if (key == 'a') {
+        notify("angry");
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::onNotify(std::string event) {
+    if (event == "happy") {
+        setState(happyState);
+    } else if (event == "sad") {
+        setState(sadState);
+    } else if (event == "angry") {
+        setState(angryState);
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::setState(std::shared_ptr<EmotionState> newState) {
+    currentState = newState;
+    ofLogNotice() << "Estado cambiado a: " << currentState->getName();
 }
 ```
-
-**Prueba:**
-```cpp
-garden.setState(new WindyState());
-garden.update();
-// Se observa cambio en color, velocidad, log del estado.
-```
-
----
-
-##  Integración
-
-1. El usuario hace clic → `InputManager` notifica a `Garden`.
-2. `Garden::onNotify()` invoca `ParticleFactory` para crear una nueva partícula del tipo actual.
-3. El comportamiento de la partícula depende del estado actual del `Garden`.
-
-```cpp
-void Garden::onNotify(string event) {
-    if(event == "mouseClicked") {
-        auto p = ParticleFactory::createParticle(currentEmotion, mousePos);
-        particles.push_back(p);
-    }
-}
-```
-
----
-
-##  Testing y Depuración
-
-Durante el desarrollo se aplicaron pruebas básicas para cada componente:
-
-- `std::cout` y `ofLogNotice()` para verificar cambios de estado y creación de partículas.
-- Logs de notificaciones en consola para validar el patrón Observer.
-- Breakpoints y seguimiento de objetos para ver estados internos.
-
-Ejemplo:
-```cpp
-cout << "Estado actual: Calm" << endl;
-garden.setState(new GrowthState());
-cout << "Nuevo estado aplicado" << endl;
-```
-
----
-
-##  Interactividad
-
-- Mouse click → emite partículas.
-- Teclas (1, 2, 3) → cambian emoción: feliz, enojado, triste.
-- Cada 10 segundos, el jardín cambia de estado automáticamente.
-- Las partículas reaccionan visualmente según el estado: velocidad, dispersión y color.
-
----
-
-
----
-
-##  Desafíos y Soluciones
-
-**Problema:** Integrar correctamente los tres patrones sin acoplamiento excesivo.  
-**Solución:** Modularización estricta: cada patrón en su archivo, clara responsabilidad por clase.
-
-**Problema:** Sincronizar cambios de estado con el tiempo.  
-**Solución:** Uso de `ofGetElapsedTimef()` y lógica condicional simple para cambiar de estado.
-
-**Problema:** Verificar visualmente los efectos.  
-**Solución:** Colores, tamaños, trayectorias y logs diferenciados por cada estado y tipo de partícula.
 
 ---
 
